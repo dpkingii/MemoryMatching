@@ -23,6 +23,22 @@ let lockBoard = false;
 */
 function initGame() {
     // Write your code here
+    let gameBoard = document.getElementById('game-board')
+    gameBoard.innerHTML = ''
+    cards = []
+
+    for(i = 0;i<symbols.length;i++){
+        let toAdd1 = createCard(symbols[i])
+        let toAdd2 = createCard(symbols[i])
+        cards.push(toAdd1)
+        cards.push(toAdd2)
+
+    }
+    shuffleArray(cards)
+
+    for(i=0;i<cards.length;i++){
+        gameBoard.appendChild(cards[i])
+    }
 
     document.getElementById('restart-btn').addEventListener('click', initGame);
 }
@@ -34,6 +50,16 @@ function initGame() {
 */
 function createCard(symbol) {
     // Write your code here
+
+    let newCard  = document.createElement('div')
+    newCard.classList.add('card')
+    newCard.dataset.symbol = symbol
+
+    newCard.addEventListener('click', ()=> {
+        flipCard(newCard)
+    })
+
+    return newCard
 }
 
 /*
@@ -45,9 +71,20 @@ function createCard(symbol) {
     want to check for a match using the checkForMatch() function. 
 */
 function flipCard(card) {
+
     // If the board is supposed to be locked or you picked the same card you already picked
     if (lockBoard || card === firstCard) return;
     // Write your code here
+
+    card.classList.add('flipped')
+    card.textContent = card.dataset.symbol
+
+    if (firstCard==null){
+        firstCard = card
+    }else{
+        secondCard = card
+        checkForMatch()
+    }
 }
 
 /* 
@@ -56,7 +93,11 @@ function flipCard(card) {
     Otherwise, you should unflip the card and continue playing normally.
 */
 function checkForMatch() {
-    // Write your code here
+    if (firstCard.dataset.symbol === secondCard.dataset.symbol){
+        disableCards()
+    }else{
+        unflipCards()
+    }
 }
 
 /* 
@@ -65,7 +106,9 @@ function checkForMatch() {
     to reset the firstCard, secondCard, and lockBoard variables. (That's been written for you already)
 */
 function disableCards() {
-    // Write your code here
+    firstCard.classList.add('matched')
+    secondCard.classList.add('matched')
+    resetBoard()
 }
  
 /* ---------------------  Everything under has already been done for you -------------------------- */
